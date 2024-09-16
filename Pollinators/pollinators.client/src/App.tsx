@@ -1,59 +1,85 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import Location from './components/Location';
+import { useState } from "react";
+import "./App.css";
+import Location from "./components/Location";
+import CameraComponent from "./components/Camera";
 
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
-}
+type ImageData = {
+  id: string;
+  typeofPlant: string;
+  latitude: number;
+  longitude: number;
+  notes: string;
+  dateOfEntry: string;
+};
+
+const PlantTypes = [
+  "Lavender",
+  "Sunflower",
+  "Bee Balm",
+  "Coneflower",
+  "Black-eyed Susan",
+  "Milkweed",
+  "Salvia",
+  "Zinnia",
+  "Aster",
+  "Marigold",
+  "Other",
+];
 
 function App() {
-    const [forecasts, setForecasts] = useState<Forecast[]>();
+  const [image, setImage] = useState<string>();
+  const [notes, setNotes] = useState<string>('');
+  const [plantType, setPlantType] = useState('Other');
+  const [location, setLocation] = useState<GeolocationPosition>();
 
-    useEffect(() => {
-        populateWeatherData();
-    }, []);
+  return (
+    <div>
+      <h1 id="tableLabel">People + Pollinators</h1>
+      <h2>Report a pollinator plant</h2>
+      <CameraComponent onCapture={setImage} />
+      <p>Current Location:</p> <Location onLocation={setLocation} />
+      <p>Plant Type:
+      <select
+        onChange={(e) => setPlantType(e.target.value)}
+        value={plantType}
+      >
+        {PlantTypes.map((value, index) => (
+          <option key={index} value={value}>
+            {value}
+          </option>
+        ))}
+      </select>
+      </p>
+      <p>Notes: <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} /></p>
+      <button disabled={!location || !image} onClick={uploadPhoto}>
+        Submit
+      </button>
+    </div>
+  );
 
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-
-    return (
-        <div>
-            <h1 id="tableLabel">People + Pollinators</h1>
-            <h2>Report a pollinator plant</h2>
-            <Location/>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
-    );
-
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        setForecasts(data);
+  async function uploadPhoto() {
+    console.log(image);
+    const imageData: ImageData = {
+      id: crypto.randomUUID(),
+      typeofPlant: plantType,
+      latitude: location!.coords.latitude,
+      longitude: location!.coords.longitude,
+      notes,
+      dateOfEntry: new Date().toISOString(),
+    };
+    const response = await fetch("api/location", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(imageData),
+    });
+    if (response.ok) {
+      console.log("Photo uploaded");
+    } else {
+      console.error("Photo upload failed");
     }
+  }
 }
 
 export default App;
