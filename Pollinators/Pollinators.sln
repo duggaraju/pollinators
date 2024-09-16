@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35303.130
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pollinators.Server", "Pollinators.Server\Pollinators.Server.csproj", "{E3F286B6-0717-4783-B4C8-60E4E359BC00}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "pollinators.client", "pollinators.client\pollinators.client.esproj", "{40077AFC-EE15-4C98-B5E9-907B13A2C278}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E3F286B6-0717-4783-B4C8-60E4E359BC00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3F286B6-0717-4783-B4C8-60E4E359BC00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3F286B6-0717-4783-B4C8-60E4E359BC00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3F286B6-0717-4783-B4C8-60E4E359BC00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40077AFC-EE15-4C98-B5E9-907B13A2C278}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40077AFC-EE15-4C98-B5E9-907B13A2C278}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40077AFC-EE15-4C98-B5E9-907B13A2C278}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{40077AFC-EE15-4C98-B5E9-907B13A2C278}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40077AFC-EE15-4C98-B5E9-907B13A2C278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40077AFC-EE15-4C98-B5E9-907B13A2C278}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6D340543-89FD-4D2A-987C-E96E67B6AC5E}
+	EndGlobalSection
+EndGlobal

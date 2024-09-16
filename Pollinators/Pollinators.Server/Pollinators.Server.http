@@ -1,0 +1,6 @@
+@Pollinators.Server_HostAddress = http://localhost:5163
+
+GET {{Pollinators.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
