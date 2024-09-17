@@ -15,7 +15,6 @@ builder.Services.AddSwaggerGen();
 
 // CosmosDB configuration
 var cosmosEndpointUri = builder.Configuration["CosmosDb:EndpointUri"];
-var cosmosPrimaryKey = builder.Configuration["CosmosDb:PrimaryKey"];
 var cosmosDatabaseId = builder.Configuration["CosmosDb:DatabaseId"];
 var cosmosContainerId = builder.Configuration["CosmosDb:ContainerId"];
 

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace PollinatorApp.Models
 {
-    public class Location
+    public record struct Location
     {
         [JsonPropertyName("id")]
 #pragma warning disable IDE1006 // Required lower case id to prevent missing id field errrors
