@@ -37,8 +37,7 @@ const CameraComponent: React.FC<CameraProps> = ({ onCapture }) => {
     <div>
       <Camera
         ref={cameraRef}
-        className="camera"
-        style={{ width: 480, height: 480 }}
+        className="h-80"
         errorLayout={<div>Oops!</div>}
         onReady={onReady}
         onError={(e) => console.error("Camera couldn't load :", e)}

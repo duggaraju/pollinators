@@ -34,8 +34,8 @@ function Form() {
   return (
     <div>
       <h2>Report a pollinator plant</h2>
+      <Location onLocation={setLocation} />
       <CameraComponent onCapture={setImage} />
-      <p>Current Location:</p> <Location onLocation={setLocation} />
       <p>Plant Type:
       <select
         onChange={(e) => setPlantType(e.target.value)}
@@ -49,7 +49,7 @@ function Form() {
       </select>
       </p>
       <p>Notes: <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} /></p>
-      <button disabled={!location || !image} onClick={uploadPhoto}>
+      <button disabled={!location || !image} onClick={uploadPhoto} className="">
         Submit
       </button>
     </div>

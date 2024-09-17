@@ -27,9 +27,9 @@ const Location: React.FC<LocationProps> = ({ onLocation }) => {
   });
 
   return (
-    <div>
+    <div className="text-xs">
       {location ? (
-        <p>
+        <p >
           Latitude: {location.latitude}, Longitude: {location.longitude}
         </p>
       ) : (
