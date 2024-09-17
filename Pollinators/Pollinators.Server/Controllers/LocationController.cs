@@ -6,14 +6,16 @@ namespace PollinatorApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LocationController(LocationStore locationStore) : ControllerBase
+    public class LocationController(ILogger<LocationStore> logger, LocationStore locationStore) : ControllerBase
     {
         private readonly LocationStore _locationStore = locationStore;
+        private readonly ILogger _logger = logger;
 
         // POST api/<LocationController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Location location)
         {
+            _logger.LogInformation("Adding location: {location}", location);
             await _locationStore.AddLocationAsync(location);
             return CreatedAtAction(nameof(Get), new { location.id }, location);
         }

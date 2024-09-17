@@ -24,23 +24,9 @@ var environment = builder.Environment.EnvironmentName;
 
 builder.Services.AddSingleton(s =>
 {
-    CosmosClient cosmosClient;
-
-    if (environment == Environments.Development)
-    {
-        // Use Cosmos DB Emulator for local development
-        cosmosClient = new CosmosClient(cosmosEndpointUri, cosmosPrimaryKey);
-    }
-    else
-    {
-        // Use DefaultAzureCredential for production
-        var credential = new DefaultAzureCredential();
-        cosmosClient = new CosmosClient(cosmosEndpointUri, credential);
-    }
-
-    var database = cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosDatabaseId).Result;
-    var container = database.Database.CreateContainerIfNotExistsAsync(cosmosContainerId, "/id").Result;
-    return container.Container;
+    var cosmosClient = new CosmosClient(cosmosEndpointUri, new DefaultAzureCredential());
+    var container = cosmosClient.GetContainer(cosmosDatabaseId, cosmosContainerId);
+    return container;
 });
 
 // Register LocationStore service
