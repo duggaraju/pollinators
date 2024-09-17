@@ -1,32 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PollinatorApp.Models;
+using PollinatorApp.Services;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace Pollinators.Server.Controllers
+namespace PollinatorApp.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class LocationController : ControllerBase
+    [Route("api/[controller]")]
+    public class LocationController(LocationStore locationStore) : ControllerBase
     {
-        private readonly ILogger _logger;
-        public LocationController(ILogger<LocationController> logger)
-        {
-            this._logger = logger;
-        }
-
-        // GET: api/<LocationController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        private readonly LocationStore _locationStore = locationStore;
 
         // POST api/<LocationController>
         [HttpPost]
-        public void Post([FromBody] Location location)
+        public async Task<IActionResult> Post([FromBody] Location location)
         {
-            _logger.LogInformation("Received JSON {value}", location);
+            await _locationStore.AddLocationAsync(location);
+            return CreatedAtAction(nameof(Get), new { location.id }, location);
+        }
+
+        // GET api/<LocationController>/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            var location = await _locationStore.GetLocationAsync(id);
+            if (location == null)
+            {
+                return NotFound();
+            }
+            return Ok(location);
+        }
+
+        // GET api/<LocationController>/range
+        [HttpGet("range")]
+        public async Task<IActionResult> GetLocationsInRange(double latitude, double longitude, double rangeInKm)
+        {
+            var locations = await _locationStore.GetLocationsInRangeAsync(latitude, longitude, rangeInKm);
+            return Ok(locations);
         }
 
     }
