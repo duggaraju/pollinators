@@ -41,7 +41,7 @@ const CameraComponent: React.FC<CameraProps> = ({ onCapture }) => {
         style={{ width: 480, height: 480 }}
         errorLayout={<div>Oops!</div>}
         onReady={onReady}
-        onError={(e) => console.error("Camera couldn't load :(")}
+        onError={(e) => console.error("Camera couldn't load :", e)}
       />
       {/* Add your own UI here... */}
       <button onClick={handleCapture}>Capture</button>

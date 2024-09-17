@@ -1,7 +1,4 @@
-import { useState } from "react";
 import "./App.css";
-import Location from "./components/Location";
-import CameraComponent from "./components/Camera";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Form from "./pages/Form";
 import Dashboard from "./pages/Dashboard";
