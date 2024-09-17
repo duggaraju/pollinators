@@ -68,7 +68,7 @@ namespace PollinatorApp.Services
 
         public async Task<Token> GetToken()
         {
-            var result = await _credential.GetTokenAsync(new TokenRequestContext(["https://cosmos.azure.com/.default"]));
+            var result = await _credential.GetTokenAsync(new TokenRequestContext(["https://kusto.kusto.windows.net/.default"]));
 
             return new Token
             {
