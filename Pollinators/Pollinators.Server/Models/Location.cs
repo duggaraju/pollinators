@@ -2,23 +2,23 @@ using System.Text.Json.Serialization;
 
 namespace PollinatorApp.Models;
 
-public class Location
+public record struct Location
 {
     [JsonPropertyName("id")]
-    public required string Id { get; set; }
+    public required string Id { get; init; }
 
     [JsonPropertyName("typeOfPlant")]
-    public required string TypeOfPlant { get; set; }
+    public required string TypeOfPlant { get; init; }
 
     [JsonPropertyName("dateOfEntry")]
-    public DateTime DateOfEntry { get; set; }
+    public DateTime DateOfEntry { get; init; }
 
     [JsonPropertyName("latitude")]
-    public double Latitude { get; set; }
+    public double Latitude { get; init; }
 
     [JsonPropertyName("longitude")]
-    public double Longitude { get; set; }
+    public double Longitude { get; init; }
 
     [JsonPropertyName("notes")]
-    public required string Notes { get; set; }
+    public required string Notes { get; init; }
 }
