@@ -10,8 +10,9 @@ const CameraComponent: React.FC<CameraProps> = ({ onCapture }) => {
   const cameraRef = useRef<CameraElement>(null);
 
   const handleCapture = async () => {
-    const imageData = await cameraRef.current?.capture();
-    console.log("imageData", imageData);
+    const imageData = await cameraRef.current?.capture({
+      height: 720,
+    });
     // Camera view will pause after capture
     // imageData.url is a base64 string that can also be used as src for an <img/> tag
     // imageData.blob is a blob string to send to your server

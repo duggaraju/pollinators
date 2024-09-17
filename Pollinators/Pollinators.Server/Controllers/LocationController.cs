@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PollinatorApp.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,6 +9,12 @@ namespace Pollinators.Server.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
+        private readonly ILogger _logger;
+        public LocationController(ILogger<LocationController> logger)
+        {
+            this._logger = logger;
+        }
+
         // GET: api/<LocationController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -17,8 +24,9 @@ namespace Pollinators.Server.Controllers
 
         // POST api/<LocationController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Location location)
         {
+            _logger.LogInformation("Received JSON {value}", location);
         }
 
     }

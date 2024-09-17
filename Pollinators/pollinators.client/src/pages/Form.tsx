@@ -56,7 +56,6 @@ function Form() {
   );
 
   async function uploadPhoto() {
-    console.log(image);
     const imageData: ImageData = {
       id: crypto.randomUUID(),
       typeofPlant: plantType,
