@@ -37,6 +37,8 @@ builder.Services.AddSingleton(s =>
 // Register LocationStore service
 builder.Services.AddSingleton<LocationStore>();
 
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

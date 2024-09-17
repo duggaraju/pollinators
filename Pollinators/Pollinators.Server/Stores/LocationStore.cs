@@ -9,11 +9,13 @@ namespace PollinatorApp.Services
     public class LocationStore(
         Container container,
         ILogger<LocationStore> logger,
-        DefaultAzureCredential credential)
+        DefaultAzureCredential credential,
+        IConfiguration configuration)
     {
         private readonly ILogger _logger = logger;
         private readonly Container _container = container;
         private readonly DefaultAzureCredential _credential = credential;
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task AddLocationAsync(Location location)
         {
@@ -66,10 +68,24 @@ namespace PollinatorApp.Services
             return results;
         }
 
-        public async Task<Token> GetToken()
+        public async Task<Token> GetToken(Scope scope)
         {
-            var result = await _credential.GetTokenAsync(new TokenRequestContext(["https://kusto.kusto.windows.net/.default"]));
+            AccessToken result;
+            switch (scope)
+            {
+                case Scope.Query:
+                    var queryScope = _configuration["Kusto:QueryScope"] ?? throw new InvalidOperationException("Query scope is not configured.");
+                    result = await _credential.GetTokenAsync(new TokenRequestContext([queryScope]));
+                    break;
+                case Scope.Dashboard:
+                    var dashboardScope = _configuration["Kusto:DashboardScope"] ?? throw new InvalidOperationException("Dashboard scope is not configured.");
+                    result = await _credential.GetTokenAsync(new TokenRequestContext([dashboardScope]));
+                    break;
 
+                default:
+                    throw new ArgumentException("Invalid scope");
+            }
+            
             return new Token
             {
                 TokenValue = result.Token,

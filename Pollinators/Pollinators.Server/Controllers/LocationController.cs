@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PollinatorApp.Models;
 using PollinatorApp.Services;
+using Pollinators.Server.Models;
 
 namespace PollinatorApp.Controllers
 {
@@ -47,9 +48,14 @@ namespace PollinatorApp.Controllers
 
         // GET api/<LocationController>/token
         [HttpGet("token")]
-        public async Task<IActionResult> GetToken()
+        public async Task<IActionResult> GetToken(string inputScope)
         {
-            return Ok(await _locationStore.GetToken());
+            if (ScopeExtensions.TryParseScope(inputScope, out Scope scope))
+            {
+                return Ok(await _locationStore.GetToken(scope));
+            }
+            
+            return BadRequest("Invalid scope");
         }
     }
 }
