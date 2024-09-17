@@ -3,13 +3,22 @@ using PollinatorApp.Models;
 
 namespace PollinatorApp.Services
 {
-    public class LocationStore(Container container)
+    public class LocationStore(Container container, ILogger<LocationStore> logger)
     {
+        private readonly ILogger _logger = logger;
         private readonly Container _container = container;
 
         public async Task AddLocationAsync(Location location)
         {
-            await _container.CreateItemAsync(location, new PartitionKey(location.id));
+            try
+            {
+                await _container.CreateItemAsync(location, new PartitionKey(location.id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to add to database");
+                throw;
+            }
         }
 
         public async Task<Location?> GetLocationAsync(string id)
@@ -21,6 +30,7 @@ namespace PollinatorApp.Services
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
+                _logger.LogError(ex, "Failed to get location");
                 return null;
             }
         }
