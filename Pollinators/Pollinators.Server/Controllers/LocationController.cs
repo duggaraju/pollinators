@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Identity;
+using Microsoft.AspNetCore.Mvc;
 using PollinatorApp.Models;
 using PollinatorApp.Services;
 
@@ -6,10 +7,14 @@ namespace PollinatorApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LocationController(ILogger<LocationStore> logger, LocationStore locationStore) : ControllerBase
+    public class LocationController(
+        ILogger<LocationStore> logger, 
+        LocationStore locationStore,
+        DefaultAzureCredential credential) : ControllerBase
     {
         private readonly LocationStore _locationStore = locationStore;
         private readonly ILogger _logger = logger;
+        private readonly DefaultAzureCredential _credential = credential;
 
         // POST api/<LocationController>
         [HttpPost]
@@ -40,5 +45,11 @@ namespace PollinatorApp.Controllers
             return Ok(locations);
         }
 
+        // GET api/<LocationController>/token
+        [HttpGet("token")]
+        public async Task<IActionResult> GetToken()
+        {
+            return Ok(await _locationStore.GetToken());
+        }
     }
 }

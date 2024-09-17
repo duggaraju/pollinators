@@ -1,12 +1,19 @@
+using Azure.Core;
+using Azure.Identity;
 using Microsoft.Azure.Cosmos;
 using PollinatorApp.Models;
+using Pollinators.Server.Models;
 
 namespace PollinatorApp.Services
 {
-    public class LocationStore(Container container, ILogger<LocationStore> logger)
+    public class LocationStore(
+        Container container,
+        ILogger<LocationStore> logger,
+        DefaultAzureCredential credential)
     {
         private readonly ILogger _logger = logger;
         private readonly Container _container = container;
+        private readonly DefaultAzureCredential _credential = credential;
 
         public async Task AddLocationAsync(Location location)
         {
@@ -57,6 +64,17 @@ namespace PollinatorApp.Services
             }
 
             return results;
+        }
+
+        public async Task<Token> GetToken()
+        {
+            var result = await _credential.GetTokenAsync(new TokenRequestContext(["https://cosmos.azure.com/.default"]));
+
+            return new Token
+            {
+                TokenValue = result.Token,
+                ExpiresOn = result.ExpiresOn
+            };
         }
 
         public async Task<IEnumerable<Location>> GetAllLocationsAsync()

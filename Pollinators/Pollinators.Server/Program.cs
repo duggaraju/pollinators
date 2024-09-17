@@ -13,6 +13,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Set the AZURE_CLIENT_ID environment variable
+Environment.SetEnvironmentVariable("AZURE_CLIENT_ID", builder.Configuration["CosmosDb:UAMIClientId"]);
+
 // CosmosDB configuration
 var cosmosEndpointUri = builder.Configuration["CosmosDb:EndpointUri"];
 var cosmosDatabaseId = builder.Configuration["CosmosDb:DatabaseId"];
@@ -21,9 +24,12 @@ var cosmosContainerId = builder.Configuration["CosmosDb:ContainerId"];
 // Determine the environment
 var environment = builder.Environment.EnvironmentName;
 
+builder.Services.AddSingleton<DefaultAzureCredential>();
+
 builder.Services.AddSingleton(s =>
 {
-    var cosmosClient = new CosmosClient(cosmosEndpointUri, new DefaultAzureCredential());
+    var credential = s.GetRequiredService<DefaultAzureCredential>();
+    var cosmosClient = new CosmosClient(cosmosEndpointUri, credential);
     var container = cosmosClient.GetContainer(cosmosDatabaseId, cosmosContainerId);
     return container;
 });
