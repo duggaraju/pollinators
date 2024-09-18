@@ -76,7 +76,7 @@ function Form() {
       notes,
       dateOfEntry: new Date().toISOString(),
     };
-    className = "bg-blue-500 px-4 text-white ml-4 rounded-full";
+
     const response = await fetch("api/location", {
       method: "POST",
       headers: {
