@@ -40,5 +40,5 @@ button:focus-visible {
 }
 
 #root {
-  @apply max-w-screen-xl text-center mx-auto my-0 p-8;
+  @apply max-w-screen-xl text-center;
 }

@@ -43,9 +43,8 @@ const CameraComponent: React.FC<CameraProps> = ({ onCapture }) => {
         onReady={onReady}
         onError={(e) => console.error("Camera couldn't load :", e)}
       />
-      {/* Add your own UI here... */}
-      <button onClick={handleCapture}>Capture</button>
-      <button onClick={handleClear}>Clear</button>
+      <button className="bg-blue-500 px-4 text-white ml-4 rounded-full" onClick={handleCapture}>Capture</button>
+      <button className="bg-blue-500 px-4 text-white ml-4 rounded-full" onClick={handleClear}>Retake</button>
     </div>
   );
 };

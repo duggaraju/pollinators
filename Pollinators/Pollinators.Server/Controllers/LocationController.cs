@@ -65,14 +65,9 @@ namespace PollinatorApp.Controllers
 
         // GET api/<LocationController>/token
         [HttpGet("token")]
-        public async Task<IActionResult> GetToken(string inputScope)
+        public async Task<IActionResult> GetToken([FromQuery] Scope scope)
         {
-            if (ScopeExtensions.TryParseScope(inputScope, out Scope scope))
-            {
-                return Ok(await _locationStore.GetToken(scope));
-            }
-            
-            return BadRequest("Invalid scope");
+            return Ok(await _locationStore.GetToken(scope));
         }
 
         private async Task<bool> ValidateRecaptchaToken(string token)
