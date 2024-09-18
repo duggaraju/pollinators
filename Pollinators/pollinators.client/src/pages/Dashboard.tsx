@@ -21,13 +21,14 @@ const Dashboard = () => {
                 })
             ],
             view: new View({
-                center: fromLonLat([-122.2015, 47.6101]),
-                zoom: 12
+                center: fromLonLat([-122.2015, 47.6101]), // Bellevue coordinates
+                zoom: 12 // Adjust zoom level as needed
             })
         });
 
         // Function to fetch and display locations within the current map view
         const fetchLocationsInRange = async (latitude: number, longitude: number, rangeInKm: number) => {
+            console.log(`Fetching locations in range: ${rangeInKm} km around (${latitude}, ${longitude})`);
             try {
                 const response = await fetch(`/api/location/range?latitude=${latitude}&longitude=${longitude}&rangeInKm=${rangeInKm}`);
                 if (response.ok) {
@@ -52,7 +53,6 @@ const Dashboard = () => {
                     // Clear existing features and add new ones
                     map.getLayers().getArray().forEach(layer => {
                         if (layer instanceof VectorLayer) {
-                            layer.getSource().clear();
                             layer.setSource(newVectorSource);
                         }
                     });
@@ -68,6 +68,7 @@ const Dashboard = () => {
 
         // Function to handle map view changes
         const handleMapViewChange = async () => {
+            console.log('Map view changed');
             const view = map.getView();
             const center = view.getCenter();
             const extent = view.calculateExtent(map.getSize());
@@ -81,20 +82,18 @@ const Dashboard = () => {
             // Calculate the range in kilometers (approximation)
             const rangeInKm = Math.sqrt(Math.pow(maxLon - minLon, 2) + Math.pow(maxLat - minLat, 2)) * 111; // 1 degree ~ 111 km
 
+            console.log(`Center: (${latitude}, ${longitude}), Range: ${rangeInKm} km`);
+
             // Reuse the fetchLocationsInRange function
             await fetchLocationsInRange(latitude, longitude, rangeInKm);
         };
 
         // Add event listener for map moveend event
-        map?.on('moveend', handleMapViewChange);
+        map.on('moveend', handleMapViewChange);
 
         // Fetch and display locations initially
         handleMapViewChange();
 
-        // Cleanup event listener on component unmount
-        return () => {
-            map?.un('moveend', handleMapViewChange);
-        };
     }, []);
 
     return (
