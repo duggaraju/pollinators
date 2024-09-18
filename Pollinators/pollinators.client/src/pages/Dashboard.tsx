@@ -1,47 +1,52 @@
 // add a react component to display the map
+import { useMsal, useMsalAuthentication } from "@azure/msal-react";
+import { InteractionType } from "@azure/msal-browser";
 import React, { useEffect, useRef } from "react";
 
-type Token = {
-	token: string;
-	expiresOn: string;
+const queryRequest = {
+  scopes: ["https://pollinator.westus3.kusto.windows.net/.default"],
 };
 
-async function getToken(scope: string) {
-	const response = await fetch(`/api/location/token?scope=${scope}`);
-	if (response.ok)
-	{
-		const data = await response.json() as Token;
-		return data.token;	
-	}
-}
-
-function mapScope(scope:string) {
-	switch(scope) {
-		case 'https://rtd-metadata.azurewebsites.net/user_impersonation':
-			return 'Dashboard';
-		default:
-			return scope;
-	}
-}
+const dashboardRequest = {
+  scopes: ["https://rtd-metadata.azurewebsites.net/user_impersonation"],
+};
 
 const Dashboard: React.FC = () => {
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const { login, result, error } = useMsalAuthentication(
+    InteractionType.Silent,
+    queryRequest
+  );
+  console.log("Login", result, error);
+  useEffect(() => {
+    if (error) {
+      login(InteractionType.Redirect, queryRequest);
+    }
+  }, [error, login, result]);
+
   useEffect(() => {
     const eventHandler = async (e: MessageEvent) => {
-		if (e.data.signature === 'queryExplorer' && e.data.type === 'getToken') {
-			console.log('iframe event', e);
-			const token = await getToken(mapScope(e.data.scope));
-			frameRef.current?.contentWindow?.postMessage({
-				type: "postToken",
-				message: token,
-				scope: e.data.scope 
-			}, "*");
-		};
-	};
+      if (e.data.signature === "queryExplorer" && e.data.type === "getToken") {
+        console.log("iframe event", e, result);
+		if (result) {
+
+		} else {
+
+		}
+        frameRef.current?.contentWindow?.postMessage(
+          {
+            type: "postToken",
+            message: result?.accessToken,
+            scope: e.data.scope,
+          },
+          "*"
+        );
+      }
+    };
 
     window.addEventListener("message", eventHandler);
     return () => window.removeEventListener("message", eventHandler);
-  });
+  }, [result]);
 
   return (
     <div className="w-screen h-full flex-auto">
