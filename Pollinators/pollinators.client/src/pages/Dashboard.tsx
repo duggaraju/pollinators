@@ -6,6 +6,7 @@ import { OSM, Vector as VectorSource } from 'ol/source';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
 import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
+import Zoom from 'ol/control/Zoom';
 
 const Dashboard = () => {
     useEffect(() => {
@@ -23,7 +24,10 @@ const Dashboard = () => {
             view: new View({
                 center: fromLonLat([-122.2015, 47.6101]), // Bellevue coordinates
                 zoom: 12 // Adjust zoom level as needed
-            })
+            }),
+            controls: [
+                new Zoom()
+            ]
         });
 
         // Function to fetch and display locations within the current map view
