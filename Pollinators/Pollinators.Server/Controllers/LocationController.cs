@@ -13,12 +13,14 @@ namespace PollinatorApp.Controllers
         ILogger<LocationStore> logger, 
         LocationStore locationStore,
         DefaultAzureCredential credential,
-        IHttpClientFactory httpClientFactory) : ControllerBase
+        IHttpClientFactory httpClientFactory,
+        IConfiguration configuration) : ControllerBase
     {
         private readonly LocationStore _locationStore = locationStore;
         private readonly ILogger _logger = logger;
         private readonly DefaultAzureCredential _credential = credential;
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+        private readonly IConfiguration _configuration = configuration;
 
         // POST api/<LocationController>
         [HttpPost]
@@ -76,9 +78,12 @@ namespace PollinatorApp.Controllers
         private async Task<bool> ValidateRecaptchaToken(string token)
         {
             var client = _httpClientFactory.CreateClient();
+
+            var secret = _configuration["Recaptcha:SecretKey"] ?? throw new InvalidOperationException("Dashboard scope is not configured.");
+
             var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(new Dictionary<string, string>
             {
-                { "secret", "your-secret-key" },
+                { "secret", secret },
                 { "response", token }
             }));
 
