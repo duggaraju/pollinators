@@ -96,7 +96,7 @@ namespace PollinatorApp.Controllers
                 var resultstring = JsonSerializer.Serialize(result);
                 _logger.LogInformation("Recaptcha result: {result}", resultstring);
 
-                return result.success;
+                return result.success && result.score > 0.5;
             }
 
             return false;
