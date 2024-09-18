@@ -32,9 +32,10 @@ function Form() {
   const [plantType, setPlantType] = useState("Other");
   const [location, setLocation] = useState<GeolocationPosition>();
   const [uploading, setUploading] = useState(false);
+  const [buttonText, setButtonText] = useState<string>("Submit");
 
   const { executeRecaptcha } = useGoogleReCaptcha();
-  const uploadPhoto = async (token: string) => {
+  const uploadPhoto = async (token: string) : Promise<boolean> => {
     setUploading(true);
     const imageData: ImageData = {
       id: crypto.randomUUID(),
@@ -53,12 +54,19 @@ function Form() {
       },
       body: JSON.stringify(imageData),
     });
+
+    let success: boolean;
+
     if (response.ok) {
       console.log("Photo uploaded");
+      success = true;
     } else {
       console.error("Photo upload failed");
+      success = false;
     }
     setUploading(false);
+
+    return success;
   };
 
   const handleReCaptchaVerifyAndUpload = useCallback(async () => {
@@ -69,7 +77,14 @@ function Form() {
 
     const token = await executeRecaptcha("submit_photo");
     console.log(token);
-    await uploadPhoto(token);
+    setButtonText("Uploading...")
+    if (await uploadPhoto(token)) {
+      setButtonText("Submitted")
+    }
+    else {
+      setButtonText("Submission Error")
+    }
+
   }, [executeRecaptcha]);
 
   return (
@@ -107,7 +122,7 @@ function Form() {
         onClick={handleReCaptchaVerifyAndUpload}
         className="bg-blue-500 disabled:bg-zinc-700 px-4 text-white ml-4 rounded-full" 
       >
-        Submit
+        {buttonText}
       </button>
     </div>
   );
