@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Location from "../components/Location";
 import CameraComponent from "../components/Camera";
+import { useGoogleReCaptcha} from 'react-google-recaptcha-v3';
 
 type ImageData = {
   id: string;
@@ -30,6 +31,18 @@ function Form() {
   const [notes, setNotes] = useState<string>("");
   const [plantType, setPlantType] = useState("Other");
   const [location, setLocation] = useState<GeolocationPosition>();
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const handleReCaptchaVerifyAndUpload = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log('Execute recaptcha not yet available');
+      return;
+    }
+
+    const token = await executeRecaptcha('submit_photo');
+    console.log(token);
+    await uploadPhoto(token);
+  }, [executeRecaptcha]);
 
   return (
     <div className="w-screen h-full">
@@ -61,13 +74,14 @@ function Form() {
           placeholder="Enter any additional notes here..."
         />
       </div>
-      <button disabled={!location || !image} onClick={uploadPhoto} className="justify-center">
+      <button disabled={!location || !image} onClick={handleReCaptchaVerifyAndUpload} className="justify-center">
         Submit
       </button>
     </div>
   );
 
-  async function uploadPhoto() {
+  async function uploadPhoto(token: string) {
+
     const imageData: ImageData = {
       id: crypto.randomUUID(),
       typeofPlant: plantType,
@@ -81,6 +95,7 @@ function Form() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "RecaptchaToken": token,
       },
       body: JSON.stringify(imageData),
     });

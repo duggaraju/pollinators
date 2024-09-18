@@ -25,6 +25,7 @@ var cosmosContainerId = builder.Configuration["CosmosDb:ContainerId"];
 var environment = builder.Environment.EnvironmentName;
 
 builder.Services.AddSingleton<DefaultAzureCredential>();
+builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton(s =>
 {
