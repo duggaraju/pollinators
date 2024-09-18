@@ -27,8 +27,8 @@ const PlantTypes = [
 
 function Form() {
   const [image, setImage] = useState<string>();
-  const [notes, setNotes] = useState<string>('');
-  const [plantType, setPlantType] = useState('Other');
+  const [notes, setNotes] = useState<string>("");
+  const [plantType, setPlantType] = useState("Other");
   const [location, setLocation] = useState<GeolocationPosition>();
 
   return (
@@ -36,20 +36,32 @@ function Form() {
       <h2>Report a pollinator plant</h2>
       <Location onLocation={setLocation} />
       <CameraComponent onCapture={setImage} />
-      <p>Plant Type:
-      <select
-        onChange={(e) => setPlantType(e.target.value)}
-        value={plantType}
-      >
-        {PlantTypes.map((value, index) => (
-          <option key={index} value={value}>
-            {value}
-          </option>
-        ))}
-      </select>
-      </p>
-      <p>Notes: <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} /></p>
-      <button disabled={!location || !image} onClick={uploadPhoto} className="">
+      <div className="flex flex-col">
+        <div className="flex flex-row justify-center p-1">
+          <span>Plant Type:</span>
+          <select
+            onChange={(e) => setPlantType(e.target.value)}
+            value={plantType}
+          >
+            {PlantTypes.map((value, index) => (
+              <option key={index} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="flex flex-row justify-center p-1">
+        <span>Notes:</span>
+        <input
+          type="text"
+          className="min-w-fit"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Enter any additional notes here..."
+        />
+      </div>
+      <button disabled={!location || !image} onClick={uploadPhoto} className="justify-center">
         Submit
       </button>
     </div>
@@ -64,6 +76,7 @@ function Form() {
       notes,
       dateOfEntry: new Date().toISOString(),
     };
+    className = "bg-blue-500 px-4 text-white ml-4 rounded-full";
     const response = await fetch("api/location", {
       method: "POST",
       headers: {
