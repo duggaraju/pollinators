@@ -6,8 +6,9 @@ import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 function App() {
   return (
     <div className="bg-white dark:bg-black h-screen w-screen flex flex-col">
-        <h1 className="text-3xl justify-center">People + Pollinators</h1>
-        <Router>
+      <h1 className="text-3xl justify-center">People + Pollinators</h1>
+      <h2> Where are the Bees?</h2>
+      <Router>
         <ul
           className="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row justify-center"
           role="tablist"
@@ -30,8 +31,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/report" element={
-                <GoogleReCaptchaProvider reCaptchaKey="6LdCg0cqAAAAANKL1gXcexNG1jK1Uw-ChTho6LuP"><Form /></GoogleReCaptchaProvider>} />
+          <Route
+            path="/report"
+            element={
+              <GoogleReCaptchaProvider reCaptchaKey="6LdCg0cqAAAAANKL1gXcexNG1jK1Uw-ChTho6LuP">
+                <Form />
+              </GoogleReCaptchaProvider>
+            }
+          />
         </Routes>
       </Router>
     </div>

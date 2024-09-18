@@ -16,7 +16,6 @@ import Stroke from 'ol/style/Stroke';
 
 const Dashboard: React.FC = () => {
   const [map, setMap] = useState<Map | null>(null);
-  const [vectorSource, setVectorSource] = useState<VectorSource>(new VectorSource());
 
   const initializeMap = (vectorSource: VectorSource) => {
     const initialMap = new Map({
@@ -60,8 +59,6 @@ const Dashboard: React.FC = () => {
           }));
           newVectorSource.addFeature(marker);
         });
-
-        setVectorSource(newVectorSource);
 
         // Automatically zoom to show all points
         const extent = newVectorSource.getExtent();
