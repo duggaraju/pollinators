@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
-    <div className="bg-white dark:bg-black">
+    <div className="bg-white dark:bg-black h-screen w-screen">
         <h1 className="text-3xl">People + Pollinators</h1>
         <Router>
         <ul

@@ -32,7 +32,7 @@ function Form() {
   const [location, setLocation] = useState<GeolocationPosition>();
 
   return (
-    <div>
+    <div className="w-screen h-full">
       <h2>Report a pollinator plant</h2>
       <Location onLocation={setLocation} />
       <CameraComponent onCapture={setImage} />
