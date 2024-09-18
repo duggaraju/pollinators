@@ -21,8 +21,8 @@ const Dashboard = () => {
                 })
             ],
             view: new View({
-                center: fromLonLat([-122.2015, 47.6101]), // Bellevue coordinates
-                zoom: 12 // Adjust zoom level as needed
+                center: fromLonLat([-122.2015, 47.6101]),
+                zoom: 12
             })
         });
 
@@ -86,14 +86,14 @@ const Dashboard = () => {
         };
 
         // Add event listener for map moveend event
-        map.on('moveend', handleMapViewChange);
+        map?.on('moveend', handleMapViewChange);
 
         // Fetch and display locations initially
         handleMapViewChange();
 
         // Cleanup event listener on component unmount
         return () => {
-            map.un('moveend', handleMapViewChange);
+            map?.un('moveend', handleMapViewChange);
         };
     }, []);
 
