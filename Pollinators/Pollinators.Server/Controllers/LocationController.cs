@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PollinatorApp.Models;
 using PollinatorApp.Services;
 using Pollinators.Server.Models;
+using System.Text.Json;
 
 namespace PollinatorApp.Controllers
 {
@@ -11,17 +12,31 @@ namespace PollinatorApp.Controllers
     public class LocationController(
         ILogger<LocationStore> logger, 
         LocationStore locationStore,
-        DefaultAzureCredential credential) : ControllerBase
+        DefaultAzureCredential credential,
+        IHttpClientFactory httpClientFactory) : ControllerBase
     {
         private readonly LocationStore _locationStore = locationStore;
         private readonly ILogger _logger = logger;
         private readonly DefaultAzureCredential _credential = credential;
+        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
         // POST api/<LocationController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Location location)
         {
             _logger.LogInformation("Adding location: {location}", location);
+
+            var token = HttpContext.Request.Headers["RecaptchaToken"].FirstOrDefault();
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest("Recaptcha token is required");
+            }
+
+            if (!await ValidateRecaptchaToken(token))
+            {
+                return BadRequest("Invalid Recaptcha token");
+            }
+
             await _locationStore.AddLocationAsync(location);
             return CreatedAtAction(nameof(Get), new { location.id }, location);
         }
@@ -56,6 +71,37 @@ namespace PollinatorApp.Controllers
             }
             
             return BadRequest("Invalid scope");
+        }
+
+        private async Task<bool> ValidateRecaptchaToken(string token)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "secret", "your-secret-key" },
+                { "response", token }
+            }));
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("Recaptcha response: {content}", content);
+
+                var result = JsonSerializer.Deserialize<RecaptchaResponse>(content);
+                var resultstring = JsonSerializer.Serialize(result);
+                _logger.LogInformation("Recaptcha result: {result}", resultstring);
+
+                return result.success;
+            }
+
+            return false;
+        }
+
+        public class RecaptchaResponse
+        {
+            public bool success { get; set; }
+            public double score { get; set; }
+            public string action { get; set; }
         }
     }
 }

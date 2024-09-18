@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Form from "./pages/Form";
 import Dashboard from "./pages/Dashboard";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 function App() {
   return (
@@ -31,7 +32,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/report" element={<Form />} />
+          <Route path="/report" element={
+                <GoogleReCaptchaProvider reCaptchaKey="6LdCg0cqAAAAANKL1gXcexNG1jK1Uw-ChTho6LuP"><Form /></GoogleReCaptchaProvider>} />
         </Routes>
       </Router>
     </div>

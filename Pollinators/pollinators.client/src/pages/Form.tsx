@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Location from "../components/Location";
 import CameraComponent from "../components/Camera";
+import {  GoogleReCaptchaProvider,  useGoogleReCaptcha} from 'react-google-recaptcha-v3';
 
 type ImageData = {
   id: string;
@@ -31,31 +32,48 @@ function Form() {
   const [plantType, setPlantType] = useState('Other');
   const [location, setLocation] = useState<GeolocationPosition>();
 
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const handleReCaptchaVerifyAndUpload = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log('Execute recaptcha not yet available');
+      return;
+    }
+
+    const token = await executeRecaptcha('submit_photo');
+    console.log(token);
+    await uploadPhoto(token);
+  }, [executeRecaptcha]);
+
+  // useEffect(() => {
+  //   handleReCaptchaVerifyAndUpload();
+  // }, [handleReCaptchaVerifyAndUpload]);
+
   return (
-    <div>
-      <h2>Report a pollinator plant</h2>
-      <Location onLocation={setLocation} />
-      <CameraComponent onCapture={setImage} />
-      <p>Plant Type:
-      <select
-        onChange={(e) => setPlantType(e.target.value)}
-        value={plantType}
-      >
-        {PlantTypes.map((value, index) => (
-          <option key={index} value={value}>
-            {value}
-          </option>
-        ))}
-      </select>
-      </p>
-      <p>Notes: <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} /></p>
-      <button disabled={!location || !image} onClick={uploadPhoto} className="">
-        Submit
-      </button>
-    </div>
+      <div>
+        <h2>Report a pollinator plant</h2>
+        <Location onLocation={setLocation} />
+        <CameraComponent onCapture={setImage} />
+        <p>Plant Type:
+        <select
+          onChange={(e) => setPlantType(e.target.value)}
+          value={plantType}
+        >
+          {PlantTypes.map((value, index) => (
+            <option key={index} value={value}>
+              {value}
+            </option>
+          ))}
+        </select>
+        </p>
+        <p>Notes: <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} /></p>
+        <button onClick={function(){  handleReCaptchaVerifyAndUpload();}} className="">
+          Submit
+        </button>
+      </div>
   );
 
-  async function uploadPhoto() {
+  async function uploadPhoto(token: string) {
+
     const imageData: ImageData = {
       id: crypto.randomUUID(),
       typeofPlant: plantType,
@@ -68,6 +86,7 @@ function Form() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "RecaptchaToken": token,
       },
       body: JSON.stringify(imageData),
     });
