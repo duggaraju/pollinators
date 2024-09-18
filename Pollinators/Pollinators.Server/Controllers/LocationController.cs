@@ -84,14 +84,10 @@ namespace PollinatorApp.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                var content = await response.Content.ReadAsStringAsync();
-                _logger.LogInformation("Recaptcha response: {content}", content);
+                var result = await response.Content.ReadFromJsonAsync<RecaptchaResponse>();
+                _logger.LogInformation("Recaptcha response: {result}", result);
 
-                var result = JsonSerializer.Deserialize<RecaptchaResponse>(content);
-                var resultstring = JsonSerializer.Serialize(result);
-                _logger.LogInformation("Recaptcha result: {result}", resultstring);
-
-                return result.success && result.score > 0.5;
+                return (result?.success ?? false) && result?.score > 0.5;
             }
 
             return false;
@@ -101,7 +97,7 @@ namespace PollinatorApp.Controllers
         {
             public bool success { get; set; }
             public double score { get; set; }
-            public string action { get; set; }
+            public string action { get; set; } = string.Empty;
         }
     }
 }

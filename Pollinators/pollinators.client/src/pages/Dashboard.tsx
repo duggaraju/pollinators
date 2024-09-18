@@ -5,7 +5,7 @@ import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
-import { Style, Circle as CircleStyle, Fill, Stroke, Text } from 'ol/style';
+import { Style, Fill, Stroke, Text } from 'ol/style';
 import Zoom from 'ol/control/Zoom';
 
 // Function to fetch and display locations within the current map view
