@@ -74,7 +74,8 @@ namespace PollinatorApp.Controllers
         {
             var client = _httpClientFactory.CreateClient();
 
-            var secret = _configuration["Recaptcha:SecretKey"] ?? throw new InvalidOperationException("Dashboard scope is not configured.");
+            var secret = Environment.GetEnvironmentVariable("RecaptchaSecretKey")
+                 ?? throw new InvalidOperationException("RecaptchaSecretKey is not configured.");
 
             var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(new Dictionary<string, string>
             {
