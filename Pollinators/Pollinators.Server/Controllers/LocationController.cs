@@ -74,7 +74,7 @@ namespace PollinatorApp.Controllers
         {
             var client = _httpClientFactory.CreateClient();
 
-            var secret = Environment.GetEnvironmentVariable("RecaptchaSecretKey")
+            var secret = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_RecaptchaSecretKey")
                  ?? throw new InvalidOperationException("RecaptchaSecretKey is not configured.");
 
             var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(new Dictionary<string, string>
