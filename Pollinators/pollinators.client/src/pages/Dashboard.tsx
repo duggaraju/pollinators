@@ -5,7 +5,7 @@ import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import { Feature } from 'ol';
 import { Point } from 'ol/geom';
-import { Style, Fill, Stroke, Text } from 'ol/style';
+import { Style, Text } from 'ol/style';
 import Zoom from 'ol/control/Zoom';
 
 // Function to fetch and display locations within the current map view
@@ -37,17 +37,7 @@ const fetchLocationsInRange = async (
                         new Style({
                             text: new Text({
                                 text: '🐝',
-                                font: '20px sans-serif',
-                                fill: new Fill({ color: 'rgba(255, 0, 0, 0.6)' }), // Red color with some transparency
-                                stroke: new Stroke({
-                                    color: 'rgba(255, 0, 0, 1)',
-                                    width: 2
-                                }),
-                                offsetX: 0,
-                                offsetY: 0,
-                                placement: 'point',
-                                textAlign: 'center',
-                                textBaseline: 'middle',
+                                font: '20px sans-serif'
                             }),
                         })
                     );
