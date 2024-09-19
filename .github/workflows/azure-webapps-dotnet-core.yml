@@ -50,6 +50,7 @@ jobs:
           node-version: 20
           # File containing the version Spec of the version to use.  Examples: package.json, .nvmrc, .node-version, .tool-versions.
           cache: npm
+          cache-dependency-path: 'Pollinators/pollinators.client/package-lock.json'
           
       - name: Set up dependency caching for faster builds
         uses: actions/cache@v3
