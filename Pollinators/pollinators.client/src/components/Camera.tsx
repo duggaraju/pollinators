@@ -1,6 +1,6 @@
 // Capture a photo from the camera and display it on the screen
-import React, { useRef } from "react";
-import { Camera, CameraElement } from "react-use-camera";
+import React, { useRef } from 'react';
+import { Camera, CameraElement } from 'react-use-camera';
 
 export type CameraProps = {
   onCapture: (imgSrc?: string) => void;
@@ -31,17 +31,18 @@ const CameraComponent: React.FC<CameraProps> = ({ onCapture }) => {
   };
 
   const onReady = () => {
-    console.log("Camera is now visibile to the user");
+    console.log('Camera is now visibile to the user');
   };
 
   return (
     <div>
       <Camera
         ref={cameraRef}
+        constraints={{ facingMode: { ideal: 'environment' }}}
         className="h-80"
         errorLayout={<div>Oops!</div>}
         onReady={onReady}
-        onError={(e) => console.error("Camera couldn't load :", e)}
+        onError={(e) => console.error('Camera couldn\'t load :', e)}
       />
       <button className="bg-blue-500 px-4 text-white ml-4 rounded-full" onClick={handleCapture}>Capture</button>
       <button className="bg-blue-500 px-4 text-white ml-4 rounded-full" onClick={handleClear}>Retake</button>
