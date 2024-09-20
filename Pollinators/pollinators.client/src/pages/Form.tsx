@@ -59,7 +59,7 @@ function Form() {
 
   const handleReCaptchaVerifyAndUpload = useCallback(async () => {
     if (!executeRecaptcha || !location) {
-      console.error("Execute recaptcha not yet available", location);
+      console.error("Execute recaptcha not yet available", location, image!.length);
       return;
     }
 
