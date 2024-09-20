@@ -58,8 +58,8 @@ function Form() {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleReCaptchaVerifyAndUpload = useCallback(async () => {
-    if (!executeRecaptcha) {
-      console.error("Execute recaptcha not yet available");
+    if (!executeRecaptcha || !location) {
+      console.error("Execute recaptcha not yet available", location);
       return;
     }
 
@@ -123,16 +123,14 @@ function Form() {
           placeholder="Enter any additional notes here..."
         />
       </div>
-      <div>
-        <button
-          disabled={!location || !image || uploading || !executeRecaptcha}
-          onClick={handleReCaptchaVerifyAndUpload}
-          className="bg-blue-500 disabled:bg-zinc-700 px-4 text-white ml-4 rounded-full"
-        >
-          {buttonText}
-        </button>
-        <span ref={errRef}></span>
-      </div>
+      <button
+        disabled={!location || uploading || !executeRecaptcha}
+        onClick={handleReCaptchaVerifyAndUpload}
+        className="bg-blue-500 disabled:bg-zinc-700 px-4 text-white ml-4 rounded-full"
+      >
+        {buttonText}
+      </button>
+      <p ref={errRef}></p>
     </div>
   );
 }
