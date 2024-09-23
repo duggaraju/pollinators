@@ -2,15 +2,27 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Form from "./pages/Form";
 import Dashboard from "./pages/Dashboard";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import DesignerImage from './assets/Designer.png';
 
 function App() {
   return (
-    <div className="bg-white dark:bg-black h-screen w-screen flex flex-col">
-      <h1 className="text-3xl justify-center">People + Pollinators</h1>
-      <h2> Where are the Bees?</h2>
+    <div className="bg-yellow-100 dark:bg-gray-600 h-screen w-screen flex flex-col">
+      <div className="flex justify-center items-center py-1 bg-yellow-100 dark:bg-gray-600">
+        <img
+          src={DesignerImage}
+          alt="Bee Icon"
+          className="h-20 w-20 mr-2 opacity-80 rounded-lg object-cover"
+        />
+        <h1 className="text-5xl font-bold text-center text-yellow-600 p-2 rounded bg-white dark:bg-gray-900 leading-tight">
+          BuzzMap
+        </h1>
+      </div>
+      <h4 className="text-lg font-semibold text-center">
+        Discover the World of Pollinators
+      </h4>
       <Router>
         <ul
-          className="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row justify-center"
+          className="flex mb-0 list-none flex-wrap pt-1 pb-4 flex-row justify-center"
           role="tablist"
         >
           <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
