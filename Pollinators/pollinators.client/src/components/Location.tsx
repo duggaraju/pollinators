@@ -20,6 +20,8 @@ const Location: React.FC<LocationProps> = ({ onLocation }) => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
+      }, (err) => {
+        console.error('Failed to get location', err);
       });
     } else {
       alert("Geolocation is not supported by this browser.");

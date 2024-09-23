@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Location from "../components/Location";
 import CameraComponent from "../components/Camera";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
@@ -26,6 +26,27 @@ const PlantTypes = [
   "Other",
 ];
 
+const uploadData = async (imageData: ImageData, token: string): Promise<boolean> => {
+  const response = await fetch("api/location", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      RecaptchaToken: token,
+    },
+    body: JSON.stringify(imageData),
+  });
+
+  let success: boolean;
+  if (response.ok) {
+    console.log("Photo uploaded");
+    success = true;
+  } else {
+    console.error("Photo upload failed", await response.text());
+    success = false;
+  }
+  return success;
+};
+
 function Form() {
   const [image, setImage] = useState<string>();
   const [notes, setNotes] = useState<string>("");
@@ -33,56 +54,41 @@ function Form() {
   const [location, setLocation] = useState<GeolocationPosition>();
   const [uploading, setUploading] = useState(false);
   const [buttonText, setButtonText] = useState<string>("Submit");
-
+  const errRef = useRef<HTMLParagraphElement>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
-  const uploadPhoto = async (token: string) : Promise<boolean> => {
-    setUploading(true);
-    const imageData: ImageData = {
-      id: crypto.randomUUID(),
-      typeofPlant: plantType,
-      latitude: location!.coords.latitude,
-      longitude: location!.coords.longitude,
-      notes,
-      dateOfEntry: new Date().toISOString(),
-    };
-
-    const response = await fetch("api/location", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        RecaptchaToken: token,
-      },
-      body: JSON.stringify(imageData),
-    });
-
-    let success: boolean;
-
-    if (response.ok) {
-      console.log("Photo uploaded");
-      success = true;
-    } else {
-      console.error("Photo upload failed");
-      success = false;
-    }
-    setUploading(false);
-
-    return success;
-  };
 
   const handleReCaptchaVerifyAndUpload = useCallback(async () => {
-    if (!executeRecaptcha) {
-      console.log("Execute recaptcha not yet available");
+    if (!executeRecaptcha || !location) {
+      console.error("Execute recaptcha not yet available", location, image);
       return;
     }
 
-    const token = await executeRecaptcha("submit_photo");
-    console.log(token);
-    setButtonText("Uploading...")
-    if (await uploadPhoto(token)) {
-      setButtonText("Submitted")
-    }
-    else {
-      setButtonText("Submission Error")
+    setUploading(true);
+
+    try {
+      const imageData: ImageData = {
+        id: crypto.randomUUID(),
+        typeofPlant: plantType,
+        latitude: location!.coords.latitude,
+        longitude: location!.coords.longitude,
+        notes,
+        dateOfEntry: new Date().toISOString(),
+      };
+      const token = await executeRecaptcha("submit_photo");
+      console.log(token);
+      setButtonText("Uploading...")
+      if (await uploadData(imageData, token)) {
+        errRef.current!.innerText = "Submitted successfully!";
+      }
+      else {
+        errRef.current!.innerText = "Submission error. Please try again.";
+      }
+    } catch (err) {
+      console.error('Submission failed.', err);
+      errRef.current!.innerText = "Submission failed. Please try again.";
+    } finally {
+      setUploading(false);
+      setButtonText("Submit");
     }
 
   }, [executeRecaptcha]);
@@ -118,12 +124,13 @@ function Form() {
         />
       </div>
       <button
-        disabled={!location || !image || uploading}
+        disabled={!location || uploading || !executeRecaptcha}
         onClick={handleReCaptchaVerifyAndUpload}
-        className="bg-blue-500 disabled:bg-zinc-700 px-4 text-white ml-4 rounded-full" 
+        className="bg-blue-500 disabled:bg-zinc-700 px-4 text-white ml-4 rounded-full"
       >
         {buttonText}
       </button>
+      <p ref={errRef}></p>
     </div>
   );
 }
