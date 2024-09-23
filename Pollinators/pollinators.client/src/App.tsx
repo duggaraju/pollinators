@@ -6,14 +6,14 @@ import DesignerImage from './assets/Designer.png';
 
 function App() {
   return (
-    <div className="bg-yellow-100 dark:bg-gray-600 h-screen w-screen flex flex-col">
-      <div className="flex justify-center items-center py-1 bg-yellow-100 dark:bg-gray-600">
+    <div className="bg-yellow-100 dark:bg-black h-screen w-screen flex flex-col">
+      <div className="flex justify-center items-center py-1 bg-yellow-100 dark:bg-black">
         <img
           src={DesignerImage}
           alt="Bee Icon"
           className="h-20 w-20 mr-2 opacity-80 rounded-lg object-cover"
         />
-        <h1 className="text-5xl font-bold text-center text-yellow-600 p-2 rounded bg-white dark:bg-gray-900 leading-tight">
+        <h1 className="text-5xl font-bold text-center text-yellow-500 p-2 rounded bg-white dark:bg-gray-700 leading-tight">
           BuzzMap
         </h1>
       </div>
