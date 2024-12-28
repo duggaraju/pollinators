@@ -13,9 +13,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Set the AZURE_CLIENT_ID environment variable
-Environment.SetEnvironmentVariable("AZURE_CLIENT_ID", builder.Configuration["CosmosDb:UAMIClientId"]);
-
 // CosmosDB configuration
 var cosmosEndpointUri = builder.Configuration["CosmosDb:EndpointUri"];
 var cosmosDatabaseId = builder.Configuration["CosmosDb:DatabaseId"];

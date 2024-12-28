@@ -1,7 +1,7 @@
-import { useCallback, useRef, useState } from "react";
-import Location from "../components/Location";
-import CameraComponent from "../components/Camera";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useCallback, useRef, useState } from 'react';
+import Location from '../components/Location';
+import CameraComponent from '../components/Camera';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 type ImageData = {
   id: string;
@@ -13,24 +13,27 @@ type ImageData = {
 };
 
 const PlantTypes = [
-  "Lavender",
-  "Sunflower",
-  "Bee Balm",
-  "Coneflower",
-  "Black-eyed Susan",
-  "Milkweed",
-  "Salvia",
-  "Zinnia",
-  "Aster",
-  "Marigold",
-  "Other",
+  'Lavender',
+  'Sunflower',
+  'Bee Balm',
+  'Coneflower',
+  'Black-eyed Susan',
+  'Milkweed',
+  'Salvia',
+  'Zinnia',
+  'Aster',
+  'Marigold',
+  'Other',
 ];
 
-const uploadData = async (imageData: ImageData, token: string): Promise<boolean> => {
-  const response = await fetch("api/location", {
-    method: "POST",
+const uploadData = async (
+  imageData: ImageData,
+  token: string
+): Promise<boolean> => {
+  const response = await fetch('api/location', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       RecaptchaToken: token,
     },
     body: JSON.stringify(imageData),
@@ -38,10 +41,10 @@ const uploadData = async (imageData: ImageData, token: string): Promise<boolean>
 
   let success: boolean;
   if (response.ok) {
-    console.log("Photo uploaded");
+    console.log('Photo uploaded');
     success = true;
   } else {
-    console.error("Photo upload failed", await response.text());
+    console.error('Photo upload failed', await response.text());
     success = false;
   }
   return success;
@@ -49,17 +52,17 @@ const uploadData = async (imageData: ImageData, token: string): Promise<boolean>
 
 function Form() {
   const [image, setImage] = useState<string>();
-  const [notes, setNotes] = useState<string>("");
-  const [plantType, setPlantType] = useState("Other");
+  const [notes, setNotes] = useState<string>('');
+  const [plantType, setPlantType] = useState('Other');
   const [location, setLocation] = useState<GeolocationPosition>();
   const [uploading, setUploading] = useState(false);
-  const [buttonText, setButtonText] = useState<string>("Submit");
+  const [buttonText, setButtonText] = useState<string>('Submit');
   const errRef = useRef<HTMLParagraphElement>(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleReCaptchaVerifyAndUpload = useCallback(async () => {
     if (!executeRecaptcha || !location) {
-      console.error("Execute recaptcha not yet available", location, image);
+      console.error('Execute recaptcha not yet available', location, image);
       return;
     }
 
@@ -74,24 +77,22 @@ function Form() {
         notes,
         dateOfEntry: new Date().toISOString(),
       };
-      const token = await executeRecaptcha("submit_photo");
+      const token = await executeRecaptcha('submit_photo');
       console.log(token);
-      setButtonText("Uploading...")
+      setButtonText('Uploading...');
       if (await uploadData(imageData, token)) {
-        errRef.current!.innerText = "Submitted successfully!";
-      }
-      else {
-        errRef.current!.innerText = "Submission error. Please try again.";
+        errRef.current!.innerText = 'Submitted successfully!';
+      } else {
+        errRef.current!.innerText = 'Submission error. Please try again.';
       }
     } catch (err) {
       console.error('Submission failed.', err);
-      errRef.current!.innerText = "Submission failed. Please try again.";
+      errRef.current!.innerText = 'Submission failed. Please try again.';
     } finally {
       setUploading(false);
-      setButtonText("Submit");
+      setButtonText('Submit');
     }
-
-  }, [executeRecaptcha]);
+  }, [executeRecaptcha, image, location, notes, plantType]);
 
   return (
     <div className="w-screen h-full">
